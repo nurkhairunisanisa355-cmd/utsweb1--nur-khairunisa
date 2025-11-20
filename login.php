@@ -1,17 +1,21 @@
 <?php
 session_start();
 
-// Data login statis (tanpa database)
-$valid_username = "admin";
-$valid_password = "1234";
+// Cek apakah user sudah login
+if (isset($_SESSION['username'])) {
+    header("Location: dashboard.php");
+    exit;
+}
 
-if (isset($_POST['username']) && isset($_POST['password'])) {
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+// Proses login saat form dikirim
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $username = $_POST['username'] ?? '';
+    $password = $_POST['password'] ?? '';
 
-    if ($username === $valid_username && $password === $valid_password) {
-        // Jika benar, simpan session
+    // Login sederhana (username: admin, password: 123)
+    if ($username === 'NISA' && $password === '123') {
         $_SESSION['username'] = $username;
+        $_SESSION['role'] = 'Dosen';
         header("Location: dashboard.php");
         exit;
     } else {
@@ -19,3 +23,25 @@ if (isset($_POST['username']) && isset($_POST['password'])) {
     }
 }
 ?>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Login</title>
+</head>
+<body>
+    <h2>Form Login</h2>
+
+    <?php 
+    if (!empty($error)) {
+        echo "<p style='color:red;'>$error</p>"; 
+    }
+    ?>
+
+    <form method="post">
+        Username: <input type="text" name="username" required><br><br>
+        Password: <input type="password" name="password" required><br><br>
+        <button type="submit">Login</button>
+    </form>
+</body>
+</html>
